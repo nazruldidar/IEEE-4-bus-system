@@ -7,10 +7,10 @@ zline2= zline1;
 yline= [0.09i 0 0;0 0.09i 0;0 0 0.09i];                                  %line admittance matrix
 
 %Three phase transformer rating 12.47 kV/ 4.16 kV, 6 MVA.
-ztrans= (0.01+0.06i)*(4.16^2*1000/6000);                  %transfer impedance actual value referred to the low voltage side
+ztrans= (0.01+0.06i)*(4.16^2*1000/6000);                  %actual value of transformer referred to the low voltage side
 zt= [ztrans 0 0;0 ztrans 0; 0 0 ztrans];
-V_mag= zeros(Total_bus,3);                                %storing the final voltage value to this array
-Del= zeros(Total_bus,3);                                  %storing the final angle value to this array
+V_mag= zeros(Total_bus,3);                                % will store the final voltage value to this array
+Del= zeros(Total_bus,3);                                  %will store the final angle value to this array
 nt= 12.47*sqrt(3)/4.16;                                   %transformer ratio
 
 
@@ -74,22 +74,22 @@ z(:,:,1)= ELN;
 z(:,:,k)=v{q};
 
 
-if abs(z(:,:,k)-z(:,:,k-1))*sqrt(3)/12470<0.001                 %convergence criterion (Comparing L-N voltage at the source side)
-     break
-else
-    v{q+1}= A1*ELN-B1*i{q+1};
-    v{q+2}= At*v{q+1}-Bt*i{q+2};
-    v{q+3}= A2*v{q+2}-B2*i{q+3};
-    k=k+1;
-    p=p+1;
-end
+    if abs(z(:,:,k)-z(:,:,k-1))*sqrt(3)/12470<0.001             %convergence criterion (Comparing L-N voltage at the source side)
+        break
+    else
+        v{q+1}= A1*ELN-B1*i{q+1};
+        v{q+2}= At*v{q+1}-Bt*i{q+2};
+        v{q+3}= A2*v{q+2}-B2*i{q+3};
+        k=k+1;
+        p=p+1;
+    end
 end
 
-for i=1:Total_bus                                               %storing the final value in this loop
+for i=1:Total_bus                                               %storing the voltage and current angle value in this loop
     for j=1:3
-    V_mag(i,j)= abs(v{1,i}(j));
-    Del(i,j)= rad2deg(angle(v{1,i}(j)));
-    end
+        V_mag(i,j)= abs(v{1,i}(j));
+        Del(i,j)= rad2deg(angle(v{1,i}(j)));
+     end
 end
 
 
